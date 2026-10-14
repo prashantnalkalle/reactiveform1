@@ -17,9 +17,9 @@ Angular serves at http://localhost:4200 and proxies /api to http://127.0.0.1:300
 
 Deploy this folder as the frontend repository. vercel.json declares the Angular framework, npm ci installation, npm run build, dist/reactiveform1 output, and the SPA rewrite.
 
-Set the Vercel environment variable BACKEND_URL to the deployed Render origin, for example https://YOUR-BACKEND.onrender.com. Do not add /api. The build validates the URL and writes a public API configuration into the output; no secret belongs in this setting. Redeploy if the backend URL changes.
+Production builds connect to https://yps-backend.vercel.app/api by default. To use another backend, set the Vercel environment variable BACKEND_URL to its HTTPS origin without /api. The build validates the URL and writes a public API configuration into the output; no secret belongs in this setting. Redeploy if the backend URL changes.
 
-The frontend can build before the backend is deployed. When BACKEND_URL is missing, the build logs a warning and uses /api. On Vercel, saving admissions will not work until BACKEND_URL is configured and the frontend is redeployed; the local development proxy is not available there.
+Local development still uses /api through the Angular proxy. On the backend Vercel project, set FRONTEND_URL to the exact frontend production origin without a trailing slash and redeploy the backend. This permits browser requests from the frontend. The backend still requires durable external storage for saved admissions and uploads on Vercel.
 
 If a Vercel build fails, inspect the final error in the build log. npm deprecation warnings do not by themselves fail the build. In Vercel Project Settings, add BACKEND_URL for Production (and Preview if needed), then create a new deployment to apply it.
 

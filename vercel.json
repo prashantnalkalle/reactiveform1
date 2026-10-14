@@ -1,0 +1,9 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "angular",
+  "installCommand": "npm ci",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist/reactiveform1",
+  "rewrites": [{ "source": "/((?!assets/|.*\\.).*)", "destination": "/index.html" }],
+  "headers": [{ "source": "/assets/api-config.js", "headers": [{ "key": "Cache-Control", "value": "no-store" }] }]
+}

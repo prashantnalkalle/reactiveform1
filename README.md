@@ -1,27 +1,36 @@
-# Reactiveform1
+# YPS Academy student admissions
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.2.13.
+Angular frontend in reactiveform1; independent backend in ../yps-backend.
 
-## Development server
+## Local development
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Install frontend dependencies with npm ci. Install backend dependencies with npm --prefix ../yps-backend ci.
 
-## Code scaffolding
+In separate terminals from this folder:
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+    npm run server
+    npm start
 
-## Build
+Angular serves at http://localhost:4200 and proxies /api to http://127.0.0.1:3000.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Deploy the frontend on Vercel
 
-## Running unit tests
+Deploy this folder as the frontend repository. vercel.json declares the Angular framework, npm ci installation, npm run build, dist/reactiveform1 output, and the SPA rewrite.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Set the Vercel environment variable BACKEND_URL to the deployed Render origin, for example https://YOUR-BACKEND.onrender.com. Do not add /api. The build validates the URL and writes a public API configuration into the output; no secret belongs in this setting. Redeploy if the backend URL changes. A Vercel build refuses to proceed without this variable.
 
-## Running end-to-end tests
+## Deploy the backend on Render
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+See ../yps-backend/README.md and its render.yaml. The backend needs the exact Vercel origin in FRONTEND_URL and a persistent disk for saved admissions and files.
 
-## Further help
+Deploy the backend first, then set BACKEND_URL in Vercel. Once Vercel supplies the frontend URL, set FRONTEND_URL in Render and redeploy the backend.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Features and checks
+
+Cash hides payment methods; online and cheque show conditional options. Photos accept JPG, PNG and WEBP; payment proofs also accept PDF, up to 2 MB each. After saving, the generated receipt can be printed or saved as PDF.
+
+Subject rates and academic options are sample values configured in the frontend and backend; keep them consistent.
+
+Build: npm run build
+Frontend tests: npm test -- --watch=false --browsers=ChromeHeadless
+Backend tests: npm --prefix ../yps-backend test

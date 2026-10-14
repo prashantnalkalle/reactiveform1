@@ -70,9 +70,6 @@
           "options": {
             "proxyConfig": "proxy.conf.json"
           },
-          "options": {
-            "proxyConfig": "proxy.conf.json"
-          },
           "configurations": {
             "production": {
               "browserTarget": "reactiveform1:build:production"

@@ -9,7 +9,10 @@ if (process.env.BACKEND_URL) {
   }
   apiUrl = backend.origin + '/api';
 } else if (process.env.VERCEL) {
-  throw new Error('Set BACKEND_URL to your Render backend URL in Vercel before building.');
+  console.warn(
+    'BACKEND_URL is not set. Building the frontend with /api. ' +
+    'To enable admission saving on Vercel, set BACKEND_URL to your deployed backend origin and redeploy.'
+  );
 }
 const build = spawnSync(process.execPath, [require.resolve('@angular/cli/bin/ng'), 'build'], { stdio: 'inherit' });
 if (build.status !== 0) process.exit(build.status || 1);

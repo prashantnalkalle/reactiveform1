@@ -268,7 +268,7 @@ export class AppComponent implements OnDestroy {
       return error.error.error + '. Please check your details and try again.';
     }
     if ([0, 404, 502, 503, 504].includes(error.status)) {
-      return 'Cannot connect to the backend. Run npm run server, then restart Angular with npm start.';
+      return 'Cannot connect to the server. Please try again later or contact the administrator.';
     }
     return 'The server could not save the admission. Please try again.';
   }

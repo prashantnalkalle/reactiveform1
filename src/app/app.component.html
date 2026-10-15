@@ -114,6 +114,7 @@
             <label class="primary upload"
               >&#8613; &nbsp; {{ photo ? "Change Photo" : "Upload Photo"
               }}<input
+                #fileInput
                 type="file"
                 accept="image/jpeg,image/png,image/webp"
                 (change)="uploadFile($event, 'photo')"
@@ -356,6 +357,7 @@
             </div>
             <label class="secondary"
               >&#8613; &nbsp; Upload File<input
+                #fileInput
                 type="file"
                 accept="application/pdf,image/jpeg,image/png,image/webp"
                 (change)="uploadFile($event, 'receipt')" /></label

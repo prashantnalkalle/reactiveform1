@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Component, OnDestroy } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { Component, ElementRef, OnDestroy, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { FeeReceipt } from './models/interface';
@@ -14,6 +14,9 @@ type UploadType = 'photo' | 'receipt';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnDestroy {
+  @ViewChild(FormGroupDirective) private formDirective?: FormGroupDirective;
+  @ViewChildren('fileInput') private fileInputs?: QueryList<ElementRef<HTMLInputElement>>;
+
   readonly years = ['2026-27', '2027-28', '2028-29'];
   readonly classes = ['Class 8', 'Class 9', 'Class 10', 'Class 11', 'Class 12'];
   readonly paymentMethods = [
@@ -218,6 +221,7 @@ export class AppComponent implements OnDestroy {
       )
       .subscribe({
         next: (result) => {
+          this.resetForm();
           this.generatedReceipt = result.receipt;
           this.message = 'Admission saved. Your fee receipt is ready below.';
           setTimeout(() => {
@@ -234,6 +238,40 @@ export class AppComponent implements OnDestroy {
 
   printReceipt(): void {
     window.print();
+  }
+
+  private resetForm(): void {
+    const defaults = {
+      firstName: '',
+      lastName: '',
+      email: '',
+      contact: '',
+      gender: '',
+      year: '',
+      class: '',
+      subjects: [] as string[],
+      selfStudy: false,
+      discount: 0,
+      amount: 0,
+      paymentDate: this.today(),
+      paymentMode: 'cash',
+      paymentMethod: '',
+      remarks: '',
+    };
+    if (this.formDirective) {
+      this.formDirective.resetForm(defaults);
+    } else {
+      this.form.reset(defaults);
+    }
+    this.fileInputs?.forEach((input) => (input.nativeElement.value = ''));
+    this.photo = undefined;
+    this.receipt = undefined;
+    if (this.photoPreview) {
+      URL.revokeObjectURL(this.photoPreview);
+    }
+    this.photoPreview = '';
+    this.fileError = '';
+    this.showFeeBreakdown = false;
   }
 
   private today(): string {

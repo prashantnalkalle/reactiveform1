@@ -58,6 +58,20 @@ describe('Admission form', () => {
     });
     app.form.controls.subjects.setValue(['Mathematics']);
     app.form.controls.amount.setValue(500);
+    fixture.detectChanges();
+    const fileInputs: HTMLInputElement[] = Array.from(
+      fixture.nativeElement.querySelectorAll('input[type="file"]'),
+    );
+    fileInputs.forEach((input, index) => {
+      const transfer = new DataTransfer();
+      transfer.items.add(new File(['image'], `${index}.png`, { type: 'image/png' }));
+      input.files = transfer.files;
+      input.dispatchEvent(new Event('change'));
+    });
+    const preview = app.photoPreview;
+    const revoke = spyOn(URL, 'revokeObjectURL').and.callThrough();
+    app.form.controls.paymentMode.setValue('online');
+    app.form.controls.paymentMethod.setValue('PhonePe');
     app.submit();
     const http = TestBed.inject(HttpTestingController);
     expect(app.generatedReceipt).toBeUndefined();
@@ -83,6 +97,18 @@ describe('Admission form', () => {
         remarks: '',
       },
     });
+    expect(app.form.controls.firstName.value).toBe('');
+    expect(app.selectedSubjects).toEqual([]);
+    expect(app.form.controls.amount.value).toBe(0);
+    expect(app.form.controls.paymentMode.value).toBe('cash');
+    expect(app.form.controls.paymentMethod.valid).toBeTrue();
+    expect(app.form.pristine).toBeTrue();
+    expect(app.form.untouched).toBeTrue();
+    expect(app.photo).toBeUndefined();
+    expect(app.receipt).toBeUndefined();
+    expect(app.photoPreview).toBe('');
+    expect(revoke).toHaveBeenCalledWith(preview);
+    fileInputs.forEach((input) => expect(input.value).toBe(''));
     app.form.controls.amount.setValue(1000);
     fixture.detectChanges();
     expect(app.generatedReceipt?.paid).toBe(500);
@@ -113,6 +139,8 @@ describe('Admission form', () => {
       .flush({}, { status: 500, statusText: 'Server error' });
     expect(app.generatedReceipt).toBeUndefined();
     expect(app.saving).toBeFalse();
+    expect(app.form.controls.firstName.value).toBe('Test');
+    expect(app.selectedSubjects).toEqual(['Mathematics']);
     http.verify();
   });
   it('shows backend validation errors instead of a connection error', () => {
